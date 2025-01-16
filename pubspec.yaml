@@ -30,6 +30,11 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  dio: ^5.0.0           # For HTTP requests
+  provider: ^6.0.0      # For state management
+  shared_preferences: ^2.0.0  # For local storage
+  intl: ^0.17.0
+  flutter_secure_storage: ^8.0.0  # For secure storage
 
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
@@ -51,6 +56,8 @@ dev_dependencies:
 
 # The following section is specific to Flutter packages.
 flutter:
+  assets:
+    - assets/
 
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
