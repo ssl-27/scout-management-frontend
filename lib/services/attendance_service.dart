@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../config/env_config.dart';
 import '../services/storage_service.dart';
 
 class AttendanceService {
@@ -6,7 +7,7 @@ class AttendanceService {
   final StorageService _storage = StorageService();
 
   AttendanceService() {
-    _dio.options.baseUrl = 'http://localhost:3000'; // Your backend URL
+    _dio.options.baseUrl = EnvConfig.apiBaseUrl; // Your backend URL
   }
 
   Future<void> _setAuthHeader() async {

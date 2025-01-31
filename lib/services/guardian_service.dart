@@ -1,4 +1,5 @@
 import 'package:dio/dio.dart';
+import '../config/env_config.dart';
 import '../services/storage_service.dart';
 
 class GuardianService {
@@ -6,7 +7,7 @@ class GuardianService {
   final StorageService _storage = StorageService();
 
   GuardianService() {
-    _dio.options.baseUrl = 'http://localhost:3000';
+    _dio.options.baseUrl = EnvConfig.apiBaseUrl; // Your backend URL
   }
 
   Future<void> _setAuthHeader() async {

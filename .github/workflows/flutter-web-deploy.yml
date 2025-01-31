@@ -1,0 +1,41 @@
+# .github/workflows/flutter-web-deploy.yml
+name: Flutter Web Deploy
+
+on:
+  push:
+    branches: [ develop ]  # or your default branch
+  pull_request:
+    branches: [ develop ]
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - name: Setup Flutter
+        uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.16.5'  # Specify your Flutter version
+          channel: 'stable'
+
+      - name: Install Dependencies
+        run: flutter pub get
+
+      - name: Build Web
+        run: |
+          flutter build web --dart-define=ENV=dev  # Use 'prod' for production
+          cp build/web/index.html build/web/404.html  # For client-side routing
+
+      - name: Setup Google Cloud
+        uses: google-github-actions/setup-gcloud@v0
+        with:
+          project_id: ${{ secrets.GCP_PROJECT_ID }}
+          service_account_key: ${{ secrets.GCP_SA_KEY }}
+          export_default_credentials: true
+
+      - name: Deploy to App Engine
+        run: |
+          cd build/web
+          gcloud app deploy app.yaml --quiet
