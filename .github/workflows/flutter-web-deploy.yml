@@ -17,7 +17,7 @@ jobs:
       - name: Setup Flutter
         uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.16.5'  # Specify your Flutter version
+          flutter-version: '3.27.0'  # Specify your Flutter version
           channel: 'stable'
 
       - name: Verify Flutter Installation
