@@ -46,6 +46,8 @@ jobs:
 
 
       - name: Deploy to App Engine
-        run: |
-          cd build/web
-          gcloud app deploy app.yaml --quiet
+        id: deploy
+        uses: google-github-actions/deploy-appengine@v1
+        with:
+          working_directory: build/web
+          version: v1-${{ github.sha }}
