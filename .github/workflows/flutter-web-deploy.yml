@@ -34,6 +34,28 @@ jobs:
           flutter build web --dart-define=ENV=dev  # Use 'prod' for production
           cp build/web/index.html build/web/404.html  # For client-side routing
 
+      - name: Create and Verify app.yaml
+        run: |
+          echo "Creating app.yaml in build/web directory..."
+          cat > build/web/app.yaml << 'EOL'
+          runtime: python39
+          handlers:
+            - url: /(.*)
+              static_files: \1
+              upload: (.*)
+              secure: always
+          EOL
+          echo "Verifying app.yaml creation..."
+          if [ -f "build/web/app.yaml" ]; then
+            echo "app.yaml exists. Content:"
+            cat build/web/app.yaml
+          else
+            echo "Error: app.yaml was not created"
+            exit 1
+          fi
+          echo "Listing build/web directory:"
+          ls -la build/web/
+
       - name: Google Auth
         uses: 'google-github-actions/auth@v1'
         with:
