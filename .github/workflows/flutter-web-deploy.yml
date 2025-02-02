@@ -33,6 +33,11 @@ jobs:
           flutter build web --dart-define=ENV=dev  # Use 'prod' for production
           cp build/web/index.html build/web/404.html  # For client-side routing
 
+      - name: Google Auth
+        uses: 'google-github-actions/auth@v1'
+        with:
+          credentials_json: '${{ secrets.GCP_SA_KEY }}'
+
       - name: Setup Google Cloud
         uses: google-github-actions/setup-gcloud@v1
         with:
