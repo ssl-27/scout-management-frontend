@@ -34,6 +34,9 @@ jobs:
           flutter build web \
           --dart-define=ENV=dev \
           --dart-define=API_BASE_URL=${{ secrets.API_BASE_URL }} \
+          --base-href '/'
+
+
 
       - name: Setup Web Routing
         run: |
@@ -41,18 +44,22 @@ jobs:
           cat > build/web/app.yaml << 'EOL'
           runtime: python39
           handlers:
-            - url: /assets
-              static_dir: assets
+            # First handle static files
+            - url: /(.*\.(js|css|json|png|ico|txt))$
+              static_files: \1
+              upload: .*\.(js|css|json|png|ico|txt)$
               secure: always
           
-            - url: /favicon\.ico
-              static_files: favicon.ico
-              upload: favicon\.ico
+            # Handle other static assets
+            - url: /assets/(.*)
+              static_files: assets/\1
+              upload: assets/.*
               secure: always
           
+            # All other routes go to index.html
             - url: /.*
               static_files: index.html
-              upload: index\.html
+              upload: index.html
               secure: always
           EOL
           
