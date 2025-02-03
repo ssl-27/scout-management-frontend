@@ -1,29 +1,63 @@
+// lib/config/app_config.dart
 class EnvConfig {
   static const String local = 'local';
   static const String dev = 'dev';
   static const String prod = 'prod';
 
-  static String environment = const String.fromEnvironment('ENV', defaultValue: local);
+  // Environment
+  static final String environment = const String.fromEnvironment(
+    'ENV',
+    defaultValue: local,
+  );
 
-  static String get apiBaseUrl {
+  // API Configuration
+  static final String apiBaseUrl = const String.fromEnvironment(
+    'API_BASE_URL',
+    defaultValue: 'http://localhost:3000',
+  );
+
+  // // Authentication
+  // static final String authSecret = const String.fromEnvironment(
+  //   'AUTH_SECRET',
+  //   defaultValue: '',
+  // );
+  //
+  // // Other sensitive configurations
+  // static final String firebaseApiKey = const String.fromEnvironment(
+  //   'FIREBASE_API_KEY',
+  //   defaultValue: '',
+  // );
+
+  // Public configurations that can vary by environment
+  static Map<String, dynamic> get publicConfig {
     switch (environment) {
-      case local:
-        return 'http://localhost:3000';
       case dev:
-        return 'https://scout-management-api-450043626382.asia-east2.run.app';  // Your dev backend URL
+        return {
+          'maxUploadSize': 10485760, // 10MB
+          'allowedFileTypes': ['jpg', 'png', 'pdf'],
+          'maxConcurrentUploads': 3,
+        };
       case prod:
-        return 'https://api.your-domain.com';      // Your prod backend URL
+        return {
+          'maxUploadSize': 5242880, // 5MB
+          'allowedFileTypes': ['jpg', 'png'],
+          'maxConcurrentUploads': 2,
+        };
       default:
-        return 'http://localhost:3000';
+        return {
+          'maxUploadSize': 20971520, // 20MB
+          'allowedFileTypes': ['jpg', 'png', 'pdf', 'doc'],
+          'maxConcurrentUploads': 5,
+        };
     }
   }
 
-  // Add other environment-specific configurations here
+  // Helper method to get complete config
   static Map<String, dynamic> get config {
     return {
-      'apiBaseUrl': apiBaseUrl,
       'environment': environment,
-      // Add other config values
+      'apiBaseUrl': apiBaseUrl,
+      ...publicConfig,
     };
   }
 }

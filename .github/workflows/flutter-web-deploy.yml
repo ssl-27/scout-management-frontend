@@ -31,30 +31,36 @@ jobs:
 
       - name: Build Web
         run: |
-          flutter build web --dart-define=ENV=dev  # Use 'prod' for production
-          cp build/web/index.html build/web/404.html  # For client-side routing
+          flutter build web \
+          --dart-define=ENV=dev \
+          --dart-define=API_BASE_URL=${{ secrets.API_BASE_URL }} \
+          --web-renderer html
 
-      - name: Create and Verify app.yaml
+      - name: Setup Web Routing
         run: |
-          echo "Creating app.yaml in build/web directory..."
+          # Create app.yaml
           cat > build/web/app.yaml << 'EOL'
           runtime: python39
           handlers:
-            - url: /(.*)
-              static_files: \1
-              upload: (.*)
+            - url: /assets
+              static_dir: assets
+              secure: always
+          
+            - url: /favicon\.ico
+              static_files: favicon.ico
+              upload: favicon\.ico
+              secure: always
+          
+            - url: /.*
+              static_files: index.html
+              upload: index\.html
               secure: always
           EOL
-          echo "Verifying app.yaml creation..."
-          if [ -f "build/web/app.yaml" ]; then
-            echo "app.yaml exists. Content:"
-            cat build/web/app.yaml
-          else
-            echo "Error: app.yaml was not created"
-            exit 1
-          fi
-          echo "Listing build/web directory:"
+          
+          # Verify files
+          echo "Verifying deployment files..."
           ls -la build/web/
+          cat build/web/app.yaml
 
       - name: Google Auth
         uses: 'google-github-actions/auth@v1'
